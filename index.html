@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mohammed Calculator ✨</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg1: #74ebd5;
+      --bg2: #ACB6E5;
+      --card-bg: rgba(255,255,255,0.2);
+      --card-blur: 12px;
+      --display-bg: rgba(0,0,0,0.2);
+      --text: #ffffff;
+      --accent: #00b894;
+      --danger: #d63031;
+      --warn: #e17055;
+    }
+
+    .theme-dark {
+      --bg1: #141e30;
+      --bg2: #243b55;
+      --card-bg: rgba(255,255,255,0.05);
+      --display-bg: rgba(255,255,255,0.10);
+      --text: #e7e7e7;
+      --accent: #00cec9;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.8s ease;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      width: 20%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 70%);
+      animation: float 6s infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      to { transform: translate(25%, 25%); }
+    }
+
+    .calculator {
+      position: relative;
+      background: var(--card-bg);
+      backdrop-filter: blur(var(--card-blur));
+      border-radius: 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+      padding: 40px 30px;
+      width: 340px;
+    }
+
+    .toggle {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: background 0.3s;
+    }
+
+    .toggle:hover { background: rgba(255,255,255,0.6); }
+    .toggle svg { fill: var(--text); width: 18px; height: 18px; }
+
+    .calculator h1 {
+      text-align: center;
+      color: var(--text);
+      font-size: 26px;
+      margin-bottom: 25px;
+      font-weight: 600;
+    }
+
+    .display {
+      background: var(--display-bg);
+      padding: 18px;
+      border-radius: 12px;
+      text-align: right;
+      font-size: 32px;
+      color: var(--text);
+      margin-bottom: 25px;
+      min-height: 48px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .display::-webkit-scrollbar { display: none; }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .buttons button {
+      padding: 22px;
+      font-size: 20px;
+      border: none;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.18);
+      color: var(--text);
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: transform 0.1s ease, background 0.2s;
+    }
+
+    .buttons button:active { transform: scale(0.94); }
+    .buttons button:hover { background: rgba(255,255,255,0.28); }
+
+    .number { background: rgba(255,255,255,0.18); }
+    .number:hover { background: rgba(255,255,255,0.30); }
+
+    .operator { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+    .operator:hover { background: linear-gradient(135deg, #fbc2eb, #a18cd1); }
+
+    .equal {
+      background: linear-gradient(135deg, #00b894, #55efc4);
+      grid-column: span 2;
+    }
+    .equal:hover {
+      background: linear-gradient(135deg, #55efc4, #00b894);
+    }
+
+    .clear {
+      background: linear-gradient(135deg, #d63031, #ff7675);
+    }
+    .clear:hover {
+      background: linear-gradient(135deg, #ff7675, #d63031);
+    }
+
+    .del {
+      background: linear-gradient(135deg, #e17055, #fab16e);
+    }
+    .del:hover {
+      background: linear-gradient(135deg, #fab16e, #e17055);
+    }
+
+    @media(max-width: 400px) {
+      .calculator { transform: scale(0.9); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator">
+    <button class="toggle" id="themeBtn" title="Toggle theme">
+      <svg id="themeIcon" viewBox="0 0 24 24">
+        <path d="M12 3.1A9 9 0 1 0 21 12 8.9 8.9 0 0 0 12 3.1z"/>
+      </svg>
+    </button>
+
+    <h1>Mohammed Calculator</h1>
+
+    <div class="display" id="display">0</div>
+
+    <div class="buttons">
+      <button class="number" onclick="append('7')">7</button>
+      <button class="number" onclick="append('8')">8</button>
+      <button class="number" onclick="append('9')">9</button>
+      <button class="operator" onclick="append('/')">÷</button>
+
+      <button class="number" onclick="append('4')">4</button>
+      <button class="number" onclick="append('5')">5</button>
+      <button class="number" onclick="append('6')">6</button>
+      <button class="operator" onclick="append('*')">×</button>
+
+      <button class="number" onclick="append('1')">1</button>
+      <button class="number" onclick="append('2')">2</button>
+      <button class="number" onclick="append('3')">3</button>
+      <button class="operator" onclick="append('-')">−</button>
+
+      <button class="number" onclick="append('0')">0</button>
+      <button class="number" onclick="append('.')">.</button>
+      <button class="equal" onclick="calculate()">=</button>
+      <button class="operator" onclick="append('+')">+</button>
+
+      <button class="clear" onclick="clearDisplay()">C</button>
+      <button class="del" onclick="deleteLast()">DEL</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById('display');
+    const themeBtn = document.getElementById('themeBtn');
+    const themeIcon = document.getElementById('themeIcon');
+
+    function append(value) {
+      if (display.innerText === '0' && value !== '.') {
+        display.innerText = value;
+      } else {
+        if (display.innerText === 'Error') display.innerText = '';
+        display.innerText += value;
+      }
+    }
+
+    function clearDisplay() {
+      display.innerText = '0';
+    }
+
+    function deleteLast() {
+      if (display.innerText === 'Error' || display.innerText.length === 1) {
+        clearDisplay();
+      } else {
+        display.innerText = display.innerText.slice(0, -1);
+      }
+    }
+
+    function calculate() {
+      try {
+        const result = eval(display.innerText);
+        display.innerText = result;
+      } catch {
+        display.innerText = 'Error';
+      }
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key.match(/[0-9]/)) append(e.key);
+      if (['+','-','*','/','.'].includes(e.key)) append(e.key);
+      if (e.key === 'Enter') { e.preventDefault(); calculate(); }
+      if (e.key === 'Backspace') deleteLast();
+      if (e.key === 'Escape') clearDisplay();
+    });
+
+    themeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('theme-dark');
+      if (document.body.classList.contains('theme-dark')) {
+        themeIcon.setAttribute('d','M6.76 4.84l-1.8-1.79L3.22 4.79 5 6.56l1.76-1.72zm10.48 0L19 6.56l1.79-1.77-1.77-1.75-1.78 1.8zM12 4V1h-1v3h1zm5.66 14.66l1.79 1.79 1.77-1.77-1.8-1.79-1.76 1.77zM12 23h1v-3h-1v3zm-7.66-4.34L2.55 21.45 4.32 23.2l1.79-1.79-1.77-1.75zM4 13H1v-1h3v1zm19 0v-1h-3v1h3zm-9 5a5 5 0 1 1 0-10v10z');
+      } else {
+        themeIcon.setAttribute('d','M12 3.1A9 9 0 1 0 21 12 8.9 8.9 0 0 0 12 3.1z');
+      }
+    });
+  </script>
+</body>
+</html>
